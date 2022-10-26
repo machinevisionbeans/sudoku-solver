@@ -9,7 +9,7 @@ import { exactOneClausesWithSequentialEncoding } from '../encoding/sequential';
 export type Encoding = 'BINOMIAL' | 'SEQUENTIAL';
 
 export function sudokuSolver(
-  clauses: number[][],
+  samples: number[][],
   encoding: Encoding = 'BINOMIAL',
   size: number = DEFAULT_SIZE
 ): string[][] {
@@ -77,15 +77,23 @@ export function sudokuSolver(
     }
   }
 
-  const currentSol = solver.solve();
+  const clues: string[] = [];
+  samples.forEach((row, i) => {
+    row.forEach((val, j) => {
+      if (val > 0) {
+        clues.push(toVariable(i + 1, j + 1, val));
+      }
+    });
+  });
+
+  const currentSol = solver.solveAssuming(Logic.and(clues));
 
   return chunk(
     currentSol
       ?.getTrueVars()
-      .filter((variable: string) => /^\d\_\d\_\d$/.test(variable))
+      .filter((variable: string) => /^\d+\_\d+\_\d+$/.test(variable))
       .sort()
-      // @ts-ignore
-      .map((variable) => variable.charAt(4)),
+      .map((variable: string) => variable.split('_').pop()),
     size
   );
 }

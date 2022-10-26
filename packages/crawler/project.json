@@ -1,0 +1,24 @@
+{
+  "name": "crawler",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/crawler/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "packages/crawler/cypress.config.ts",
+        "baseUrl": "https://menneske.no",
+        "testingType": "e2e"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/crawler/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": []
+}
