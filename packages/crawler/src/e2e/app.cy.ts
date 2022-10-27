@@ -1,4 +1,4 @@
-import Papa from 'papaparse';
+import * as Papa from 'papaparse';
 
 const NO_OF_SAMPLES = 10;
 const MIN_SUDOKU_SIZE = 2;

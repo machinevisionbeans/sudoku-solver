@@ -5,6 +5,7 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "@types/papaparse": "^5.3.5",
     "core-js": "^3.6.5",
     "lodash": "^4.17.21",
     "logic-solver": "^2.0.1",
