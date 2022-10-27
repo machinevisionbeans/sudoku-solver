@@ -2,11 +2,11 @@
 declare namespace Cypress {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
-    getSample(size: number): Chainable<number[][]>;
+    getSudokuSample(size: number): Chainable<number[][]>;
   }
 }
 
-Cypress.Commands.add('getSample', (size) => {
+Cypress.Commands.add('getSudokuSample', (size) => {
   return cy.visit(`/sudoku/${size}/eng/`).then(() => {
     const matrix: number[][] = [];
 
@@ -22,7 +22,7 @@ Cypress.Commands.add('getSample', (size) => {
         matrix.push(row);
       })
       .then(() => {
-        return matrix.slice(-(size * size));
+        return matrix;
       });
   });
 });

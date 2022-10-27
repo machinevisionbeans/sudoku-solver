@@ -7,18 +7,26 @@ import { exactOneClausesWithBinomialEncoding } from '../encoding/binomial';
 import { exactOneClausesWithSequentialEncoding } from '../encoding/sequential';
 
 export type Encoding = 'BINOMIAL' | 'SEQUENTIAL';
+export type SolverReturn = {
+  sol: number[][] | null;
+  timeMs: number;
+  clauseCount: number;
+  variableCount: any;
+};
 
 export function sudokuSolver(
   samples: number[][],
   encoding: Encoding = 'BINOMIAL',
-  size: number = DEFAULT_SIZE
-): string[][] {
-  const solver = new Logic.Solver();
+  _size: number = DEFAULT_SIZE,
+): SolverReturn {
+  let clauseCount = 0;
+  const size = _size * _size;
   const exactOne =
     encoding === 'BINOMIAL'
       ? exactOneClausesWithBinomialEncoding
       : exactOneClausesWithSequentialEncoding;
 
+  const solver = new Logic.Solver();
   //  Each box contains precisely one number.
   for (let row = 1; row <= size; row++) {
     for (let col = 1; col <= size; col++) {
@@ -28,6 +36,7 @@ export function sudokuSolver(
       }
 
       const clauses = exactOne(variables);
+      clauseCount += clauses.length;
       clauses.forEach((clause) => solver.require(Logic.or(clause)));
     }
   }
@@ -41,6 +50,7 @@ export function sudokuSolver(
       }
 
       const clauses = exactOne(variables);
+      clauseCount += clauses.length;
       clauses.forEach((clause) => solver.require(Logic.or(clause)));
     }
   }
@@ -54,6 +64,7 @@ export function sudokuSolver(
       }
 
       const clauses = exactOne(variables);
+      clauseCount += clauses.length;
       clauses.forEach((clause) => solver.require(Logic.or(clause)));
     }
   }
@@ -72,6 +83,7 @@ export function sudokuSolver(
           }
         }
         const clauses = exactOne(variables);
+        clauseCount += clauses.length;
         clauses.forEach((clause) => solver.require(Logic.or(clause)));
       }
     }
@@ -86,14 +98,25 @@ export function sudokuSolver(
     });
   });
 
+  const startPoint = performance.now();
   const currentSol = solver.solveAssuming(Logic.and(clues));
+  const endPoint = performance.now();
 
-  return chunk(
-    currentSol
-      ?.getTrueVars()
-      .filter((variable: string) => /^\d+\_\d+\_\d+$/.test(variable))
-      .sort()
-      .map((variable: string) => variable.split('_').pop()),
-    size
-  );
+  const sol: number[][] = currentSol
+    ? chunk(
+        currentSol
+          .getTrueVars()
+          .filter((variable: string) => /^\d+\_\d+\_\d+$/.test(variable))
+          .sort()
+          .map((variable: string) => +variable.split('_').pop()),
+        size,
+      )
+    : null;
+
+  return {
+    sol,
+    timeMs: endPoint - startPoint,
+    clauseCount,
+    variableCount: currentSol ? Object.keys(currentSol.getMap()).length : 0,
+  };
 }
