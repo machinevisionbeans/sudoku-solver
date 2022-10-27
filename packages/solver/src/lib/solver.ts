@@ -27,6 +27,7 @@ export function sudokuSolver(
       : exactOneClausesWithSequentialEncoding;
 
   const solver = new Logic.Solver();
+  const startPoint = performance.now();
   //  Each box contains precisely one number.
   for (let row = 1; row <= size; row++) {
     for (let col = 1; col <= size; col++) {
@@ -98,7 +99,6 @@ export function sudokuSolver(
     });
   });
 
-  const startPoint = performance.now();
   const currentSol = solver.solveAssuming(Logic.and(clues));
   const endPoint = performance.now();
 
