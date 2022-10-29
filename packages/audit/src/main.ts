@@ -22,8 +22,8 @@ function promisifyParseSudokuSample(filePath: string): Promise<number[][]> {
 
 async function runAudit(encoding: Encoding) {
   const minSize = 2,
-    maxSize = 2;
-  const noOfSample = 1;
+    maxSize = 7;
+  const noOfSample = 3;
 
   const statistics = [];
 
@@ -50,7 +50,11 @@ async function runAudit(encoding: Encoding) {
     }
   }
 
-  const rawStatistics = Papa.unparse(statistics);
+  const rawStatistics = Papa.unparse({
+    fields: ['Size', 'No. of variables', 'No. of clauses', 'Performance Time'],
+    data: statistics,
+  });
+
   fs.writeFileSync(
     join(process.cwd(), `packages/audit/results/${encoding}.csv`),
     rawStatistics,
@@ -59,3 +63,4 @@ async function runAudit(encoding: Encoding) {
 }
 
 runAudit('BINOMIAL');
+runAudit('SEQUENTIAL');
