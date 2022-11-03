@@ -2,20 +2,21 @@
 import * as Logic from 'logic-solver';
 import { chunk } from 'lodash';
 import { DEFAULT_SIZE } from '../consts';
-import { toVariable } from '../encoding/to-variable';
-import { exactOneClausesWithBinomialEncoding } from '../encoding/binomial';
-import { exactOneClausesWithSequentialEncoding } from '../encoding/sequential';
+import { toVariable } from '../encoder/to-variable';
+import { exactOneClausesWithBinomialEncoding } from '../encoder/binomial';
+import { exactOneClausesWithSequentialEncoding } from '../encoder/sequential';
+import { Grid } from './types';
 
 export type Encoding = 'BINOMIAL' | 'SEQUENTIAL';
 export type SolverReturn = {
-  sol: number[][] | null;
+  sol: Grid | null;
   timeMs: number;
   clauseCount: number;
   variableCount: any;
 };
 
 export function sudokuSolver(
-  samples: number[][],
+  samples: Grid,
   encoding: Encoding = 'BINOMIAL',
   _size: number = DEFAULT_SIZE,
 ): SolverReturn {
@@ -102,7 +103,7 @@ export function sudokuSolver(
   const currentSol = solver.solveAssuming(Logic.and(clues));
   const endPoint = performance.now();
 
-  const sol: number[][] = currentSol
+  const sol: Grid = currentSol
     ? chunk(
         currentSol
           .getTrueVars()

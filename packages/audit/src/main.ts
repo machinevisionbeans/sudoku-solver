@@ -1,3 +1,4 @@
+import { Generator as SudokuGenerator } from './../../solver/src/lib/generator';
 import * as fs from 'fs';
 import * as Papa from 'papaparse';
 import { join } from 'path';
@@ -62,5 +63,9 @@ async function runAudit(encoding: Encoding) {
   );
 }
 
-runAudit('BINOMIAL');
-runAudit('SEQUENTIAL');
+// runAudit('BINOMIAL');
+// runAudit('SEQUENTIAL');
+
+const sudokuGenerator = new SudokuGenerator(3);
+console.log('Tai.......');
+console.log('Hehe', sudokuGenerator.make());
